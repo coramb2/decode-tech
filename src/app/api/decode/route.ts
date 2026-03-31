@@ -20,7 +20,11 @@ export async function POST(req: NextRequest) {
     }
 
     const response = await getDecodeResponse(query.trim());
-    return NextResponse.json({ response });
+    const res = NextResponse.json({ response });
+    res.headers.set("X-Content-Type-Options", "nosniff");
+    res.headers.set("X-Frame-Options", "DENY");
+    res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+    return res;
 
   } catch (error) {
     console.error("Decode API error:", error);
