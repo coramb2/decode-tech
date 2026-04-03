@@ -1,14 +1,8 @@
 "use client";
+import { DecodeResponse } from "@/types/decode";
+import { encodeShareData } from "@/lib/share";
 
-import { responseCookiesToRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
-import { emitWarning } from "process";
 import { useState, useRef, useEffect } from "react";
-
-type DecodeResponse = {
-  what_it_is: string;
-  what_to_do: string;
-  what_to_watch: string;
-};
 
 function parseResponse(raw: string): DecodeResponse {
   const lines = raw.split("\n");
@@ -55,6 +49,7 @@ export default function Home() {
   const [charCount, setCharCount] = useState(0);
   const responseRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (response && responseRef.current) {
@@ -93,6 +88,19 @@ export default function Home() {
     setError("");
     setCharCount(0);
     setTimeout(() => textareaRef.current?.focus(), 100);
+  };
+
+  const handleShare = () => {
+    if (!response) return;
+    const encoded = encodeShareData(query, response);
+    const url = `${window.location.origin}/share/${encoded}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    }).catch(() => {
+      // Fallback for browsers that block clipboard API
+      prompt("Copy this link:", url);
+    });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -223,6 +231,13 @@ export default function Home() {
             <button className="decode-btn" onClick={handleReset}>
               Ask another question
             </button>
+            <button
+              className="share-btn"
+              onClick={handleShare}
+              aria-label="Copy shareable link"
+            >
+              {copied ? "✓ Link copied!" : "Share this answer"}
+            </button>
             <p className="no-account-note">
               Nothing was saved. Your question stays private.
             </p>
@@ -332,7 +347,7 @@ export default function Home() {
           .decode-input-section {
             display: flex;
             flex-direction: column;
-            gap: 1.2 rem;
+            gap: 1.2rem;
           }
 
           .input-prompt {
@@ -563,6 +578,27 @@ export default function Home() {
             flex-direction: column;
             gap: 0.8rem;
             padding-top: 0.5rem;
+          }
+
+          .share-btn {
+            background: transparent;
+            color: #4a7a5a;
+            border: 1px solid #3d3224;
+            border-radius: 3px;
+            padding: 0.7rem 1.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            font-weight: bold;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: color 0.15s ease, border-color 0.15s ease;
+            align-self: flex-start;
+          }
+
+          .share-btn:hover {
+            color: #c4a245;
+            border-color: #c4a245;
           }
 
           /* Footer */

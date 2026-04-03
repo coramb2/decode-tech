@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export default function AboutPage() {
   return (
     <main className="decode-main">
@@ -14,7 +16,7 @@ export default function AboutPage() {
 
       <section className="about-section">
         <div className="about-back">
-          <a href="/" className="back-link">← Ask a question</a>
+          <Link href="/" className="back-link">← Ask a question</Link>
         </div>
 
         <div className="about-headline-block">
@@ -107,7 +109,7 @@ export default function AboutPage() {
           <p className="about-cta-text">
             You don&apos;t need an account. You don&apos;t need to know anything first.
           </p>
-          <a href="/" className="decode-btn">Ask your first question</a>
+          <Link href="/" className="decode-btn">Ask your first question</Link>
         </div>
       </section>
 
