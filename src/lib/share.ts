@@ -7,12 +7,21 @@ export function encodeShareData(query: string, response: DecodeResponse): string
         d: response.what_to_do,
         wo: response.what_to_watch,
     };
-    return btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+    return btoa(unescape(encodeURIComponent(JSON.stringify(data))))
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, "");  // strip padding
 }
 
 export function decodeShareData(encodedData: string): { query: string; response: DecodeResponse } | null {
     try {
-        const decoded = JSON.parse(decodeURIComponent(escape(atob(encodedData))));
+        // Restore URL-safe base64 to standard base64
+        const base64 = encodedData
+            .replace(/-/g, "+")
+            .replace(/_/g, "/");
+        // Re-add padding
+        const padded = base64 + "==".slice(0, (4 - base64.length % 4) % 4);
+        const decoded = JSON.parse(decodeURIComponent(escape(atob(padded))));
         return {
             query: decoded.q,
             response: {
