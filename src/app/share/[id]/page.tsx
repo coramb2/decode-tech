@@ -3,11 +3,19 @@
 import { useParams } from "next/navigation";
 import { decodeShareData } from "@/lib/share";
 import { encodeShareData } from "@/lib/share";
+import { posthog } from "@/lib/posthog";
+import { useEffect } from "react";
 
 export default function SharePage() {
     const params = useParams();
     const id = params.id as string;
     const data = decodeShareData(id);
+
+    useEffect(() => {
+        if (data) {
+            posthog.capture("share_link_visited");
+        }
+        }, []);
 
     if (!data) {
         return (

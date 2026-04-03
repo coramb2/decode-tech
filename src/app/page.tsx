@@ -1,6 +1,7 @@
 "use client";
 import { DecodeResponse } from "@/types/decode";
 import { encodeShareData } from "@/lib/share";
+import { posthog } from "@/lib/posthog";
 
 import { useState, useRef, useEffect } from "react";
 
@@ -74,6 +75,12 @@ export default function Home() {
       if (!res.ok) throw new Error(data.error || "Something went wrong.");
       setRawResponse(data.response);
       setResponse(parseResponse(data.response));
+
+      posthog.capture("question_answered", {
+        response_length: data.response.length,
+        device: window.innerWidth < 768 ? "mobile" : "desktop",
+      });
+
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong. Try again.");
     } finally {
@@ -96,6 +103,7 @@ export default function Home() {
     const url = `${window.location.origin}/share/${encoded}`;
     navigator.clipboard.writeText(url).then(() => {
       setCopied(true);
+      posthog.capture("share_clicked");
       setTimeout(() => setCopied(false), 2500);
     }).catch(() => {
       // Fallback for browsers that block clipboard API
