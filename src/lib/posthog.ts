@@ -1,16 +1,13 @@
-import PostHog from "posthog-js";
+import posthog from "posthog-js";
 
 export const initPostHog = () => {
   if (typeof window === "undefined") return;
-  if ((PostHog as any).__loaded) return;
+  if (posthog.__loaded) return;
 
-  PostHog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-    api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-    capture_pageview: false, // we handle this manually
-    capture_pageleave: true,
-    autocapture: false,
-    persistence: "memory",
+  posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
+    api_host: "https://us.i.posthog.com",
+    defaults: "2026-01-30",
   });
 };
 
-export { PostHog as posthog };
+export { posthog };
