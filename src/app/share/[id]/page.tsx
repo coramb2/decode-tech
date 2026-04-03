@@ -100,7 +100,7 @@ export default function SharePage() {
 
             <div className="response-query-echo">
                 <span className="echo-label">Someone asked:</span>
-                <p className="echo-text">&lqduo;{data.query}&rqduo;</p>
+                <p className="echo-text">&ldquo;{data.query}&rdquo;</p>
             </div>
 
             <div className="response-cards">
