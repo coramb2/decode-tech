@@ -5,6 +5,8 @@ Decode is a shame-free, zero-friction technology companion for anyone who has ev
 
 **No account. No login. No judgment. Just answers.**
 
+🔗 **Live at [decode-tech.vercel.app](https://decode-tech.vercel.app)**
+
 ---
 
 ## What it does
@@ -25,48 +27,51 @@ Low-income adults, seniors, first-generation students, recently incarcerated ind
 
 ## Tech stack
 
-- **Frontend:** Next.js 16 + TypeScript + Tailwind CSS
+- **Frontend:** Next.js 16 + TypeScript
 - **AI:** OpenRouter (openrouter/auto) — production API, free tier
-- **Hosting:** Vercel (coming soon)
-- **Analytics:** Plausible (privacy-first, coming soon)
+- **Hosting:** Vercel
+- **Analytics:** PostHog (privacy-first, ad-blocker-resistant reverse proxy)
 - **Database:** None — stateless by design in V1
 
 ---
 
 ## Running locally
 
-You'll need an [OpenRouter](https://openrouter.ai) API key. No credit card required — sign up and grab a free key from the dashboard.
+You'll need an [OpenRouter](https://openrouter.ai) API key and a [PostHog](https://posthog.com) project key. No credit card required for either.
 
 Create a `.env.local` file in the project root:
-
 ```bash
 OPENROUTER_API_KEY=sk-or-xxxxxxxxxxxxxxxx
+NEXT_PUBLIC_POSTHOG_KEY=phc_xxxxxxxxxxxxxxxx
+NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
 ```
 
 Then install and run:
-
 ```bash
 npm install
 npm run dev
 ```
 
-App runs at `http://localhost:3000`. No second terminal needed — Ollama is no longer required.
+App runs at `http://localhost:3000`. No second terminal needed.
 
 ---
 
 ## Project structure
-
-```
 src/
-  app/
-    page.tsx          # Homepage — main decoder interface
-    about/page.tsx    # About page — mission and trust-building
-    api/decode/
-      route.ts        # POST route with input validation
-  lib/
-    decode.ts         # OpenRouter API call with retry logic
-    prompt.ts         # System prompt — the tone engine (most important file)
-```
+app/
+page.tsx              # Homepage — main decoder interface
+about/page.tsx        # About page — mission and trust-building
+share/[id]/page.tsx   # Shared answer view — read-only
+api/decode/
+route.ts            # POST route with input validation + rate limiting
+components/
+PostHogProvider.tsx   # Analytics provider with reverse proxy
+lib/
+decode.ts             # OpenRouter API call with retry logic
+prompt.ts             # System prompt — the tone engine (most important file)
+share.ts              # URL-safe Base64 encode/decode for share links
+posthog.ts            # PostHog initialization
+middleware.ts           # Rate limiting — 10 requests/min per IP
 
 ---
 
@@ -74,7 +79,7 @@ src/
 
 - **Shame-free tone** — baked into the system prompt, non-negotiable
 - **Zero friction** — no account, no onboarding, first interaction requires nothing
-- **Privacy-first** — no input data stored, no tracking, no ads, ever
+- **Privacy-first** — no input data stored, no ads, ever
 - **Accessible** — WCAG 2.1 AA contrast ratios, 16px minimum font size, keyboard navigable
 - **Works anywhere** — library computer, older phone, slow connection
 
@@ -87,10 +92,14 @@ src/
 - [x] OpenRouter production backend
 - [x] About page
 - [x] Accessibility pass (WCAG AA colors + font sizes)
-- [ ] Share link feature
-- [ ] Vercel deployment
+- [x] Share link feature
+- [x] Vercel deployment
+- [x] PostHog analytics with ad-blocker-resistant reverse proxy
+- [ ] Reading level selector
+- [ ] Topic categorization + analytics dashboard
+- [ ] SMS / low-bandwidth version
+- [ ] Community org embed widget
 - [ ] Beta launch
-- [ ] Plausible analytics
 
 ---
 
