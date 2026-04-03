@@ -7,8 +7,8 @@ import { useState, useRef, useEffect } from "react";
 function parseResponse(raw: string): DecodeResponse {
   const lines = raw.split("\n");
   const sections: Record<string, string> = {};
-  const headers = ["What this is", "What you should do", "What to watch out for"];
-  
+const headers = ["What this is", "What you should do", "What to watch out for",
+                 "What this is:", "What you should do:", "What to watch out for:"];  
   let currentHeader = "";
   let currentLines: string[] = [];
 
@@ -21,7 +21,7 @@ function parseResponse(raw: string): DecodeResponse {
       if (currentHeader) {
         sections[currentHeader] = currentLines.join("\n").trim();
       }
-      currentHeader = cleaned;
+      currentHeader = cleaned.replace(":", "");  // 👈 strip colon
       currentLines = [];
     } else if (currentHeader) {
       currentLines.push(line);

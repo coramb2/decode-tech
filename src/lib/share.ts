@@ -7,7 +7,7 @@ export function encodeShareData(query: string, response: DecodeResponse): string
         d: response.what_to_do,
         wo: response.what_to_watch,
     };
-    return btoa(encodeURIComponent(JSON.stringify(data)));
+    return btoa(unescape(encodeURIComponent(JSON.stringify(data))));
 }
 
 export function decodeShareData(encodedData: string): { query: string; response: DecodeResponse } | null {
