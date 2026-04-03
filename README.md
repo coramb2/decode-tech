@@ -57,21 +57,30 @@ App runs at `http://localhost:3000`. No second terminal needed.
 ---
 
 ## Project structure
+```
 src/
-app/
-page.tsx              # Homepage — main decoder interface
-about/page.tsx        # About page — mission and trust-building
-share/[id]/page.tsx   # Shared answer view — read-only
-api/decode/
-route.ts            # POST route with input validation + rate limiting
-components/
-PostHogProvider.tsx   # Analytics provider with reverse proxy
-lib/
-decode.ts             # OpenRouter API call with retry logic
-prompt.ts             # System prompt — the tone engine (most important file)
-share.ts              # URL-safe Base64 encode/decode for share links
-posthog.ts            # PostHog initialization
-middleware.ts           # Rate limiting — 10 requests/min per IP
+├── app/
+│   ├── about/
+│   │   └── page.tsx          # About page — mission and trust-building
+│   ├── api/
+│   │   └── decode/
+│   │       └── route.ts      # POST route with input validation + rate limiting
+│   ├── share/
+│   │   └── [id]/
+│   │       └── page.tsx      # Shared answer view — read-only
+│   ├── layout.tsx            # Root layout with PostHog provider
+│   └── page.tsx              # Homepage — main decoder interface
+├── components/
+│   └── PostHogProvider.tsx   # Analytics provider with reverse proxy
+├── lib/
+│   ├── decode.ts             # OpenRouter API call with retry logic
+│   ├── posthog.ts            # PostHog initialization
+│   ├── prompt.ts             # System prompt — the tone engine (most important file)
+│   └── share.ts              # URL-safe Base64 encode/decode for share links
+├── types/
+│   └── decode.ts             # Shared TypeScript types
+└── middleware.ts             # Rate limiting — 10 requests/min per IP
+```
 
 ---
 
